@@ -1,19 +1,21 @@
-import streamlit as st
+from dotenv import load_dotenv
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OllamaEmbeddings
+from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
+#from langchain.embeddings import OllamaEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chat_models import ChatOllama
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from htmlTemplates import css, bot_template, user_template
+from langchain.chat_models import ChatOpenAI
 from functools import wraps
 import time
 import sys
 import os
+from transformers import pipeline
 
 
 # Decorator for measuring execution time
@@ -66,7 +68,8 @@ def get_text_chunks(text):
 # Function to create a vector store
 @timeit
 def get_vectorstore(text_chunks):
-    embeddings = OllamaEmbeddings(model="llama2:70b-chat")
+    #embeddings = OllamaEmbeddings(model="llama2:70b-chat")
+    embeddings = OpenAIEmbeddings()
     # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     return vectorstore
@@ -75,11 +78,12 @@ def get_vectorstore(text_chunks):
 # Function to create a conversation chain
 @timeit
 def get_conversation_chain(vectorstore):
-    llm = ChatOllama(
-            model="llama2:70b-chat",
-        callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
-        # num_gpu=2
-    )
+    llm = ChatOpenAI()
+    # llm = ChatOllama(
+    #         model="llama2:70b-chat",
+    #     callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
+    #     # num_gpu=2
+    # )
     # llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
 
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
