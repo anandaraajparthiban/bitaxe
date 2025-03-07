@@ -6,6 +6,6 @@
 2. Open AI API Key
 3. Python PIP installed.
 
-#### Steps
-Step 1 : Clone the Repository using git
-git clone 
+#### Steps ####
+_Step 1:_ Clone the Repository using git
+`git clone https://github.com/anandaraajparthiban/bitaxe.git`
