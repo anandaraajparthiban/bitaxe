@@ -7,3 +7,5 @@
 3. Python PIP installed.
 
 #### Steps
+Step 1 : Clone the Repository using git
+git clone 
