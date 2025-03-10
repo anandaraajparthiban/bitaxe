@@ -5,6 +5,18 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from datetime import datetime, timedelta
 import time
 from app import *
+import os
+import sys
+
+
+# Check Requirements
+BotToken=os.getenv("BotToken")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+
+if (not BotToken or BotToken == "") or (not OPENAI_API_KEY or OPENAI_API_KEY == ""):
+    print("SET OPENAI_API_KEY and BotToken Variables to Continue")
+    sys.exit(1)
 
 
 # Get text from PDFs
@@ -20,14 +32,11 @@ vectorstore = get_vectorstore(text_chunks)
 chain = get_conversation_chain(vectorstore)
 
 
-BotToken="7772604841:AAE1vANK35BmlW_Dze_u0VnrQ1GFC-vhBLM"
-
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if context.args:
         arguments = ' '.join(context.args)
         arguments = arguments.replace("@bitaxe_osbot","").strip()
     print(arguments)
-    BotToken="7772604841:AAE1vANK35BmlW_Dze_u0VnrQ1GFC-vhBLM"
     url = f"https://api.telegram.org/bot{BotToken}/getUpdates"
     output  = requests.get(url)
     fh = open('bitaxe.log','a')
